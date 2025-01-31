@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "../../styles/styles";
 import { productData, categoriesData } from "../../static/data";
@@ -17,7 +17,7 @@ import { backend_url } from "../../server";
 import Cart from "../cart/Cart";
 import Wishlist from "../Wishlist/Wishlist";
 import { RxCross1 } from "react-icons/rx";
-
+import logo from "../../Assests/logo.jpg";
 const Header = ({ activeHeading }) => {
   const { isSeller } = useSelector((state) => state.seller);
   const { cart } = useSelector((state) => state.cart);
@@ -25,34 +25,29 @@ const Header = ({ activeHeading }) => {
   const { isAuthenticated, user } = useSelector((state) => state.user);
   const { allProducts } = useSelector((state) => state.products);
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchData, setSearchData] = useState(null);
+  const [searchData, setSearchData] = useState([]);
   const [active, setActive] = useState(false);
   const [dropDown, setDropDown] = useState(false);
   const [openCart, setOpenCart] = useState(false);
   const [openWishlist, setOpenWishlist] = useState(false);
-  const [open, setOpen] = useState(false); // mobile menu
+  const [open, setOpen] = useState(false);
 
-  // Handle search change
   const handleSearchChange = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
 
-    // Filter products
-    const filteredProducts =
-      allProducts &&
-      allProducts.filter((product) =>
-        product.name.toLowerCase().includes(term.toLowerCase())
-      );
+    const filteredProducts = allProducts.filter(
+      (product) =>
+        product?.name?.toLowerCase()?.includes(term.toLowerCase()) ?? false
+    );
+
     setSearchData(filteredProducts);
   };
 
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 70) {
-      setActive(true);
-    } else {
-      setActive(false);
-    }
-  });
+  useEffect(() => {
+    console.log(allProducts);
+    console.log(searchData.length + " data");
+  }, [allProducts, searchData]);
 
   return (
     <>
@@ -60,14 +55,11 @@ const Header = ({ activeHeading }) => {
         <div className="hidden 800px:h-[50px] 800px:my-[20px] 800px:flex items-center justify-between ">
           <div>
             <Link to="/">
-              <img
-                src="https://shopo.quomodothemes.website/assets/images/logo.svg"
-                alt=""
-              />
+              <img src={logo} alt="" className="h-18 w-20" />
             </Link>
           </div>
           {/*Search box  */}
-          <div className="w-[50%] relative">
+          <div className="w-[50%] relative hidden">
             <input
               type="text"
               placeholder="Search for product..."
@@ -84,11 +76,11 @@ const Header = ({ activeHeading }) => {
               searchData && searchData.length !== 0 ? (
                 <div className="absolute min-h-[30vh] bg-slate-50 shadow-sm-2 z-[9] p-4">
                   {searchData &&
-                    searchData.map((i, index) => {
-                      const d = i.name;
+                    searchData?.map((i, index) => {
+                      const d = i?.name;
 
                       return (
-                        <Link to={`/product/${i._id}`}>
+                        <Link to={`/product/${i?._id}`}>
                           <div className="w-full flex items-start-py-3">
                             <img
                               src={`${backend_url}${i.images[0]}`}
@@ -123,7 +115,7 @@ const Header = ({ activeHeading }) => {
       <div
         className={`${
           active == true ? "shadow-sm fixed top-0 left-0 z-10" : null
-        } transition hidden 800px:flex items-center justify-between w-full bg-[#3321c8] h-[70px]`}
+        } transition hidden 800px:flex items-center justify-between w-full bg-[#ffc404] h-[70px]`}
       >
         <div
           className={`${styles.section} relative ${styles.noramlFlex} justify-between`}
@@ -234,9 +226,9 @@ const Header = ({ activeHeading }) => {
           <div>
             <Link to="/">
               <img
-                src="https://shopo.quomodothemes.website/assets/images/logo.svg"
+                src={logo}
                 alt=""
-                className="mt-3 cursor-pointer"
+                className="mt-3 cursor-pointer h-10 w-12"
               />
             </Link>
           </div>
@@ -285,7 +277,7 @@ const Header = ({ activeHeading }) => {
             </div>
 
             {/* Search Bar */}
-            <div className="my-8 w-[92%] m-auto h-[40px relative]">
+            <div className="my-8 w-[92%] m-auto h-[40px relative] hidden">
               <input
                 type="search"
                 placeholder="Search for products"

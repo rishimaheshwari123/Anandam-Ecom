@@ -84,7 +84,7 @@ const Cart = ({ setOpenCart }) => {
                   className={`h-[45px] flex items-center justify-center w-[100%] bg-[#e44343] rounded-[5px]`}
                 >
                   <h1 className="text-[#fff] text-[18px] font-[600]">
-                    Checkout Now (USD${totalPrice})
+                    Checkout Now (₹{totalPrice})
                   </h1>
                 </div>
               </Link>
@@ -153,7 +153,7 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
               ${data.discountPrice} * {value}
             </h4>
             <h4 className="font-[400] text-[17px] pt-[3px]  text-[#d02222] font-Roboto ">
-              US${totalPrice}
+              INR₹{totalPrice}
             </h4>
           </div>
           <RxCross1
