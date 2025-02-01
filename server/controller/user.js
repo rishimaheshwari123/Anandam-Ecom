@@ -229,31 +229,47 @@ router.put(
   upload.single("image"),
   catchAsyncErrors(async (req, res, next) => {
     try {
+      // Find the existing user
       const existsUser = await User.findById(req.user.id);
 
-      const existAvatarPath = `uploads/${existsUser.avatar}`;
+      // Check if user exists and if the avatar path is valid
+      if (!existsUser) {
+        return next(new ErrorHandler("User not found", 404));
+      }
 
-      fs.unlinkSync(existAvatarPath); // Delete Priviuse Image
+      // If there's an existing avatar, delete it
+      if (existsUser.avatar) {
+        const existAvatarPath = path.join(__dirname, "../uploads", existsUser.avatar);
 
-      const fileUrl = path.join(req.file.filename); // new image
+        // Ensure the file exists before trying to delete it
+        if (fs.existsSync(existAvatarPath)) {
+          fs.unlinkSync(existAvatarPath); // Delete the previous image
+        } else {
+          console.log("Previous avatar file not found:", existAvatarPath);
+        }
+      }
 
-      /* The code `const user = await User.findByIdAndUpdate(req.user.id, { avatar: fileUrl });` is
-        updating the avatar field of the user with the specified `req.user.id`. It uses the
-        `User.findByIdAndUpdate()` method to find the user by their id and update the avatar field
-        with the new `fileUrl` value. The updated user object is then stored in the `user` variable. */
-      const user = await User.findByIdAndUpdate(req.user.id, {
-        avatar: fileUrl,
-      });
+      // Save the new avatar
+      const fileUrl = path.join(req.file.filename);
 
+      const user = await User.findByIdAndUpdate(
+        req.user.id,
+        { avatar: fileUrl },
+        { new: true } // Return updated user object
+      );
+
+      // Return the updated user with the new avatar
       res.status(200).json({
         success: true,
         user,
       });
     } catch (error) {
+      console.log(error);
       return next(new ErrorHandler(error.message, 500));
     }
   })
 );
+
 
 // update user addresses
 router.put(

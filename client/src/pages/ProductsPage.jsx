@@ -13,21 +13,24 @@ const ProductsPage = () => {
   const { allProducts, isLoading } = useSelector((state) => state.products);
   const [data, setData] = useState([]);
   const [sortOption, setSortOption] = useState("");
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 10000 });
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 100000000000 });
 
   useEffect(() => {
+    if (!Array.isArray(allProducts)) return; // Check if allProducts is an array
+  
     let filteredData = allProducts;
+  
 
     // Filter by category if provided
     if (categoryData) {
       filteredData = filteredData.filter((product) => product.category === categoryData);
     }
-
+  
     // Filter by price range
     filteredData = filteredData.filter((product) =>
       product.discountPrice >= priceRange.min && product.discountPrice <= priceRange.max
     );
-
+  
     // Sorting logic based on selected sort option
     if (sortOption === "lowToHigh") {
       filteredData = filteredData.sort((a, b) => a.discountPrice - b.discountPrice);
@@ -42,10 +45,11 @@ const ProductsPage = () => {
     } else if (sortOption === "oldest") {
       filteredData = filteredData.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
     }
-
+  
+    console.log(filteredData)
     setData(filteredData);
   }, [allProducts, categoryData, sortOption, priceRange]);
-
+  
   return (
     <>
       {isLoading ? (
