@@ -35,12 +35,12 @@ const Header = ({ activeHeading }) => {
   const handleSearchChange = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
-
+  
     const filteredProducts = allProducts.filter(
       (product) =>
         product?.name?.toLowerCase()?.includes(term.toLowerCase()) ?? false
     );
-
+  
     setSearchData(filteredProducts);
   };
 
@@ -59,43 +59,43 @@ const Header = ({ activeHeading }) => {
             </Link>
           </div>
           {/*Search box  */}
-          <div className="w-[50%] relative hidden">
-            <input
-              type="text"
-              placeholder="Search for product..."
-              value={searchTerm}
-              onChange={handleSearchChange}
-              className="h-[40px] w-full px-2 border-[#3957db] border-[2px] rounded-md"
-            />
-            <AiOutlineSearch
-              size={30}
-              className="absolute right-2 top-1.5 cursor-pointer"
-            />
-            {
-              // Search data if length is not 0 then show
-              searchData && searchData.length !== 0 ? (
-                <div className="absolute min-h-[30vh] bg-slate-50 shadow-sm-2 z-[9] p-4">
-                  {searchData &&
-                    searchData?.map((i, index) => {
-                      const d = i?.name;
 
-                      return (
-                        <Link to={`/product/${i?._id}`}>
-                          <div className="w-full flex items-start-py-3">
-                            <img
-                              src={`${backend_url}${i.images[0]}`}
-                              alt="img"
-                              className="w-[40px] h-[40px] mr-[10px]"
-                            />
-                            <h1>{i.name}</h1>
-                          </div>
-                        </Link>
-                      );
-                    })}
-                </div>
-              ) : null
-            }
-          </div>
+          <div className="w-[50%] relative">
+  <input
+    type="text"
+    placeholder="Search for products..."
+    value={searchTerm}
+    onChange={handleSearchChange}
+    className="h-[45px] w-full px-4 border-[#3957db] border-[2px] rounded-lg focus:ring-2 focus:ring-[#3957db] transition-all duration-300"
+  />
+  <AiOutlineSearch
+    size={28}
+    className="absolute right-4 top-[10px] cursor-pointer transition-transform duration-200 hover:scale-110"
+  />
+  {searchData && searchData.length !== 0 && (
+    <div className="absolute top-[45px] left-0 w-full bg-white shadow-lg rounded-b-md z-[9] max-h-[300px] overflow-y-auto">
+      {searchData.map((i, index) => {
+        const productName = i?.name;
+
+        return (
+          <Link to={`/product/${i?._id}`} key={index}>
+            <div className="flex items-center px-4 py-3 hover:bg-[#f0f0f0] cursor-pointer transition-colors duration-300">
+              <img
+                src={`${backend_url}${i.images?.[0]}`}
+                alt={productName}
+                className="w-[40px] h-[40px] object-cover mr-[10px] rounded-full"
+              />
+              <h1 className="text-lg text-gray-800">{productName}</h1>
+            </div>
+          </Link>
+        );
+      })}
+    </div>
+  )}
+</div>
+
+
+
           {/* Search end */}
 
           {/* Become a Seller */}
