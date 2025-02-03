@@ -62,7 +62,9 @@ const ProductCard = ({ data, isEvent }) => {
     <div className="w-full h-[420px] bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 p-3 relative cursor-pointer">
       <Link
         to={`${
-          isEvent === true ? `/product/${data._id}?isEvent=true` : `/product/${data._id}`
+          isEvent === true
+            ? `/product/${data._id}?isEvent=true`
+            : `/product/${data._id}`
         }`}
       >
         <div className="relative group">
@@ -82,25 +84,36 @@ const ProductCard = ({ data, isEvent }) => {
       </Link>
 
       <div className="py-2">
-        <Link to={`/product/${data._id}`}>
+        {/* <Link to={`/product/${data._id}`}>
           <h5 className="font-semibold text-gray-700 text-xl truncate">{data.shop.name}</h5>
-        </Link>
+        </Link> */}
         <Link to={`/product/${data._id}`}>
-          <h4 className="font-medium text-lg py-2 text-gray-800 truncate">{data.name}</h4>
+          <h4 className="font-medium text-lg py-2 text-gray-800 truncate">
+            {data.name}
+          </h4>
         </Link>
         <Ratings rating={data?.ratings} />
         <div className="flex items-center justify-between py-3">
           <div className="flex items-center space-x-2">
-            <h5 className={`${styles.productDiscountPrice} text-xl font-semibold`}>
-              {data.originalPrice === 0 ? data.originalPrice : data.discountPrice} ₹
+            <h5
+              className={`${styles.productDiscountPrice} text-xl font-semibold`}
+            >
+              {data.originalPrice === 0
+                ? data.originalPrice
+                : data.discountPrice}{" "}
+              ₹
             </h5>
             {data.originalPrice && (
-              <h4 className={`${styles.price} line-through text-sm text-gray-500`}>
+              <h4
+                className={`${styles.price} line-through text-sm text-gray-500`}
+              >
                 {data.originalPrice} ₹
               </h4>
             )}
           </div>
-          <span className="text-sm text-green-500 font-medium">{data?.sold_out} sold</span>
+          <span className="text-sm text-green-500 font-medium">
+            {data?.sold_out} sold
+          </span>
         </div>
       </div>
 
