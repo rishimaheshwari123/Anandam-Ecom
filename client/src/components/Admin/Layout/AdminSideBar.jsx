@@ -106,7 +106,7 @@ const AdminSideBar = ({ active }) => {
         </Link>
       </div>
 
-      {/* <div className="w-full flex items-center p-4">
+      <div className="w-full flex items-center p-4">
         <Link to="/admin-withdraw-request" className="w-full flex items-center">
           <CiMoneyBill
             size={30}
@@ -120,7 +120,7 @@ const AdminSideBar = ({ active }) => {
             Withdraw Request
           </h5>
         </Link>
-      </div> */}
+      </div>
 
       <div className="w-full flex items-center p-4">
         <Link to="/profile" className="w-full flex items-center">

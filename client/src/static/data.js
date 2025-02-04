@@ -187,7 +187,6 @@ export const brandingData = [
   },
 ];
 
-// categories data
 export const categoriesData = [
   {
     id: 1,
@@ -260,7 +259,6 @@ export const categoriesData = [
   },
 ];
 
-// product Data
 export const productData = [
   {
     id: 1,
