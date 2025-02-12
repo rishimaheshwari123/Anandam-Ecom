@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "../../styles/styles";
-import { productData, categoriesData } from "../../static/data";
 import {
   AiOutlineHeart,
   AiOutlineSearch,
   AiOutlineShoppingCart,
 } from "react-icons/ai";
+import { fetchCategory } from "../../redux/actions/event";
+
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import { BiMenuAltLeft } from "react-icons/bi";
 import { CgProfile } from "react-icons/cg";
@@ -31,16 +32,29 @@ const Header = ({ activeHeading }) => {
   const [openCart, setOpenCart] = useState(false);
   const [openWishlist, setOpenWishlist] = useState(false);
   const [open, setOpen] = useState(false);
+  const [categories, setCategories] = useState([]);
 
+  const fetchCategories = async () => {
+    try {
+      const response = await fetchCategory();
+      setCategories(response?.categories || []);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
   const handleSearchChange = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
-  
+
     const filteredProducts = allProducts.filter(
       (product) =>
         product?.name?.toLowerCase()?.includes(term.toLowerCase()) ?? false
     );
-  
+
     setSearchData(filteredProducts);
   };
 
@@ -61,40 +75,38 @@ const Header = ({ activeHeading }) => {
           {/*Search box  */}
 
           <div className="w-[50%] relative">
-  <input
-    type="text"
-    placeholder="Search for products..."
-    value={searchTerm}
-    onChange={handleSearchChange}
-    className="h-[45px] w-full px-4 border-[#3957db] border-[2px] rounded-lg focus:ring-2 focus:ring-[#3957db] transition-all duration-300"
-  />
-  <AiOutlineSearch
-    size={28}
-    className="absolute right-4 top-[10px] cursor-pointer transition-transform duration-200 hover:scale-110"
-  />
-  {searchData && searchData.length !== 0 && (
-    <div className="absolute top-[45px] left-0 w-full bg-white shadow-lg rounded-b-md z-[9] max-h-[300px] overflow-y-auto">
-      {searchData.map((i, index) => {
-        const productName = i?.name;
+            <input
+              type="text"
+              placeholder="Search for products..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="h-[45px] w-full px-4 border-[#3957db] border-[2px] rounded-lg focus:ring-2 focus:ring-[#3957db] transition-all duration-300"
+            />
+            <AiOutlineSearch
+              size={28}
+              className="absolute right-4 top-[10px] cursor-pointer transition-transform duration-200 hover:scale-110"
+            />
+            {searchData && searchData.length !== 0 && (
+              <div className="absolute top-[45px] left-0 w-full bg-white shadow-lg rounded-b-md z-[9] max-h-[300px] overflow-y-auto">
+                {searchData.map((i, index) => {
+                  const productName = i?.name;
 
-        return (
-          <Link to={`/product/${i?._id}`} key={index}>
-            <div className="flex items-center px-4 py-3 hover:bg-[#f0f0f0] cursor-pointer transition-colors duration-300">
-              <img
-                src={`${backend_url}${i.images?.[0]}`}
-                alt={productName}
-                className="w-[40px] h-[40px] object-cover mr-[10px] rounded-full"
-              />
-              <h1 className="text-lg text-gray-800">{productName}</h1>
-            </div>
-          </Link>
-        );
-      })}
-    </div>
-  )}
-</div>
-
-
+                  return (
+                    <Link to={`/product/${i?._id}`} key={index}>
+                      <div className="flex items-center px-4 py-3 hover:bg-[#f0f0f0] cursor-pointer transition-colors duration-300">
+                        <img
+                          src={`${backend_url}${i.images?.[0]}`}
+                          alt={productName}
+                          className="w-[40px] h-[40px] object-cover mr-[10px] rounded-full"
+                        />
+                        <h1 className="text-lg text-gray-800">{productName}</h1>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
 
           {/* Search end */}
 
@@ -136,7 +148,7 @@ const Header = ({ activeHeading }) => {
               />
               {dropDown ? (
                 <DropDown
-                  categoriesData={categoriesData}
+                  categoriesData={categories}
                   setDropDown={setDropDown}
                 />
               ) : null}

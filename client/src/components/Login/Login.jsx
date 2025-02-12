@@ -15,22 +15,35 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Show loading toast
+    const loadingToast = toast.loading("Logging in...");
+
     await axios
       .post(
         `${server}/user/login-user`,
-        {
-          email,
-          password,
-        },
+        { email, password },
         { withCredentials: true }
       )
       .then((res) => {
-        toast.success("Login Sucess!");
+        // Update loading toast to success
+        toast.update(loadingToast, {
+          render: "Login Success!",
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+        });
+
         navigate("/");
         window.location.reload(true);
       })
       .catch((err) => {
-        toast.error(err.response.data.message);
+        // Update loading toast to error
+        toast.update(loadingToast, {
+          render: err.response?.data?.message || "Something went wrong!",
+          type: "error",
+          isLoading: false,
+          autoClose: 3000,
+        });
       });
   };
 

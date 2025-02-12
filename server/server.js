@@ -79,6 +79,7 @@ app.use("/api/v2/product", product);
 app.use("/api/v2/event", event);
 app.use("/api/v2/coupon", coupon);
 app.use("/api/v2/payment", payment);
+app.use("/api/v2/category", require("./routes/categoryRoutes"));
 
 // it'for errhendel
 app.use(ErrorHandler);

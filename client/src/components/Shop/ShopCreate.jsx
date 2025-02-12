@@ -21,13 +21,12 @@ const ShopCreate = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const config = { headers: { "Content-Type": "multipart/form-data" } };
-    // meaning of uper line is that we are creating a new object with the name of config and the value of config is {headers:{'Content-Type':'multipart/form-data'}}
+    // Show loading toast
+    const loadingToast = toast.loading("Creating shop...");
 
+    const config = { headers: { "Content-Type": "multipart/form-data" } };
     const newForm = new FormData();
-    // meaning of uper line is that we are creating a new form data object and we are sending it to the backend with the name of newForm and the value of newForm is new FormData()
     newForm.append("file", avatar);
-    // meanin of newForm.append("file",avatar) is that we are sending a file to the backend with the name of file and the value of the file is avatar
     newForm.append("name", name);
     newForm.append("email", email);
     newForm.append("password", password);
@@ -38,7 +37,15 @@ const ShopCreate = () => {
     axios
       .post(`${server}/shop/create-shop`, newForm, config)
       .then((res) => {
-        toast.success(res.data.message);
+        // Update loading toast to success
+        toast.update(loadingToast, {
+          render: res.data.message,
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+        });
+
+        // Reset form fields
         setName("");
         setEmail("");
         setPassword("");
@@ -46,14 +53,21 @@ const ShopCreate = () => {
         setZipCode();
         setAddress("");
         setPhoneNumber();
-      })
 
+        navigate("/shop-login");
+        window.location.reload();
+      })
       .catch((error) => {
-        toast.error(error.response.data.message);
+        // Update loading toast to error
+        toast.update(loadingToast, {
+          render: error.response?.data?.message || "Something went wrong!",
+          type: "error",
+          isLoading: false,
+          autoClose: 3000,
+        });
       });
-    navigate("/shop-login");
-    window.location.reload();
   };
+
   // File upload
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];

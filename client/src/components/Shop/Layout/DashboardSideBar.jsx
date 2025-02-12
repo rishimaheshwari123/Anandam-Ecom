@@ -108,6 +108,24 @@ const DashboardSideBar = ({ active }) => {
           </h5>
         </Link>
       </div>
+      <div className="w-full flex items-center p-4">
+        <Link
+          to="/dashboard-create-category"
+          className="w-full flex items-center"
+        >
+          <VscNewFile
+            size={30}
+            color={`${active === 15 ? "crimson" : "#555"}`}
+          />
+          <h5
+            className={`hidden 800px:block pl-2 text-[18px] font-[400] ${
+              active === 15 ? "text-[crimson]" : "text-[#555]"
+            }`}
+          >
+            Create Category
+          </h5>
+        </Link>
+      </div>
 
       <div className="w-full flex items-center p-4">
         <Link

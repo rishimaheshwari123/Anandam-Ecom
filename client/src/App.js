@@ -63,6 +63,7 @@ import axios from "axios";
 import { server } from "./server";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import ShopCreateCategory from "./pages/Shop/ShopCreateCategory";
 
 const App = () => {
   const [stripeApikey, setStripeApiKey] = useState("");
@@ -258,6 +259,14 @@ const App = () => {
           element={
             <SellerProtectedRoute>
               <ShopCreateEvents />
+            </SellerProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard-create-category"
+          element={
+            <SellerProtectedRoute>
+              <ShopCreateCategory />
             </SellerProtectedRoute>
           }
         />

@@ -15,22 +15,31 @@ const ShopLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const loadingToast = toast.loading("Logging in...");
+
     await axios
       .post(
         `${server}/shop/login-shop`,
-        {
-          email,
-          password,
-        },
+        { email, password },
         { withCredentials: true }
       )
       .then((res) => {
-        toast.success("Login Sucess!");
+        toast.update(loadingToast, {
+          render: "Login Successful!",
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+        });
         navigate("/dashboard");
         window.location.reload(true);
       })
       .catch((err) => {
-        toast.error(err.response.data.message);
+        toast.update(loadingToast, {
+          render: err.response?.data?.message || "Login failed!",
+          type: "error",
+          isLoading: false,
+          autoClose: 3000,
+        });
       });
   };
 
