@@ -3,7 +3,7 @@ const Category = require("../model/category");
 // Create a new category
 const createCategory = async (req, res) => {
   const { name } = req.body;
-  console.log(name + "name")
+ 
   try {
     const newCategory = new Category({
       name,

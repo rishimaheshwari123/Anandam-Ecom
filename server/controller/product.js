@@ -8,21 +8,33 @@ const Shop = require("../model/shop");
 const { upload } = require("../multer");
 const ErrorHandler = require("../utils/ErrorHandler");
 const fs = require("fs");
+const { uploadImageToCloudinary } = require("../utils/imageUploader");
 
 // create product
 router.post(
   "/create-product",
-  upload.array("images"),
+  upload.array("images"), // Use multer to handle incoming files
   catchAsyncErrors(async (req, res, next) => {
     try {
-      console.log("first")
+      console.log("first");
       const shopId = req.body.shopId;
       const shop = await Shop.findById(shopId);
       if (!shop) {
         return next(new ErrorHandler("Shop Id is invalid!", 400));
       } else {
         const files = req.files;
-        const imageUrls = files.map((file) => `${file.filename}`);
+        const imageUrls = [];
+
+        // Loop through each file and upload it to Cloudinary
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+
+          // Upload image to Cloudinary using your function
+          const uploadResult = await uploadImageToCloudinary(file, "products", 500, "auto");
+
+          // Store the Cloudinary image URL
+          imageUrls.push(uploadResult.secure_url);
+        }
 
         const productData = req.body;
         productData.images = imageUrls;
@@ -36,10 +48,13 @@ router.post(
         });
       }
     } catch (error) {
+      console.error(error);
       return next(new ErrorHandler(error, 400));
     }
   })
 );
+
+
 
 // get all products of a shop
 router.get(

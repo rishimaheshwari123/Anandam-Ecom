@@ -11,6 +11,8 @@ const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
 
 const sendShopToken = require("../utils/shopToken");
+const { uploadImageToCloudinary } = require("../utils/imageUploader");
+const cloudinary = require("cloudinary").v2;
 
 // create shop
 router.post("/create-shop", upload.single("file"), async (req, res, next) => {
@@ -209,27 +211,48 @@ router.put(
   upload.single("image"),
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const existsUser = await Shop.findById(req.seller._id);
+      // Find the existing shop
+      const existsShop = await Shop.findById(req.seller._id);
 
-      const existAvatarPath = `uploads/${existsUser.avatar}`;
+      // Check if shop exists
+      if (!existsShop) {
+        return next(new ErrorHandler("Shop not found", 404));
+      }
 
-      fs.unlinkSync(existAvatarPath);
+      // If there's an existing avatar, delete it
+      if (existsShop.avatar) {
+        // The existing avatar is now stored in Cloudinary, so we don't need to delete it locally.
+        const existAvatarUrl = existsShop.avatar;
 
-      const fileUrl = path.join(req.file.filename);
+        // Cloudinary delete method can be implemented here if required:
+        await cloudinary.uploader.destroy(existAvatarUrl);
+      }
 
-      const seller = await Shop.findByIdAndUpdate(req.seller._id, {
-        avatar: fileUrl,
-      });
+      // Upload new avatar image to Cloudinary
+      const uploadResult = await uploadImageToCloudinary(req.file, "shop-avatars", 500, "auto");
 
+      // Get the URL of the uploaded image from Cloudinary
+      const avatarUrl = uploadResult.secure_url;
+
+      // Update the shop document with the new avatar URL
+      const shop = await Shop.findByIdAndUpdate(
+        req.seller._id,
+        { avatar: avatarUrl },
+        { new: true } // Return updated shop object
+      );
+
+      // Return the updated shop with the new avatar URL
       res.status(200).json({
         success: true,
-        seller,
+        shop,
       });
     } catch (error) {
+      console.log(error);
       return next(new ErrorHandler(error.message, 500));
     }
   })
 );
+
 
 // update seller info
 router.put(

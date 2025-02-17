@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
+const { cloudinaryConnect } = require("./config/cloudinary");
 
 // config
 if (process.env.NODE_ENV !== "PRODUCTION") {
@@ -16,7 +17,7 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
 }
 // connect db
 connectDatabase();
-
+cloudinaryConnect();
 // create server
 const server = app.listen(process.env.PORT, () => {
   console.log(`Server is running on http://localhost:${process.env.PORT}`);

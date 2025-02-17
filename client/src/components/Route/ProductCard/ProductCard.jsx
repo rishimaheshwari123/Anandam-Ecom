@@ -67,20 +67,25 @@ const ProductCard = ({ data, isEvent }) => {
             : `/product/${data._id}`
         }`}
       >
-        <div className="relative group">
-          <img
-            src={`${backend_url}${data?.images?.[0]}`} // Optional chaining for the first image
-            alt="product"
-            className="w-full h-[200px] object-cover rounded-md transition-all duration-300 group-hover:opacity-0"
-          />
-          {data?.images?.[1] && (
-            <img
-              src={`${backend_url}${data?.images?.[1]}`} // Optional chaining for the second image
-              alt="product hover"
-              className="absolute top-0 left-0 w-full h-[200px] object-cover rounded-md opacity-0 group-hover:opacity-100 transition-all duration-300"
-            />
-          )}
-        </div>
+     <div className="relative group">
+  <img
+    src={data?.images?.[0]?.startsWith("https://res.cloudinary.com") 
+      ? data?.images?.[0] // If it's from Cloudinary
+      : `${backend_url}${data?.images?.[0]}`} // Else, it's a local image
+    alt="product"
+    className="w-full h-[200px] object-cover rounded-md transition-all duration-300 group-hover:opacity-0"
+  />
+  {data?.images?.[1] && (
+    <img
+      src={data?.images?.[1]?.startsWith("https://res.cloudinary.com")
+        ? data?.images?.[1] // If it's from Cloudinary
+        : `${backend_url}${data?.images?.[1]}`} // Else, it's a local image
+      alt="product hover"
+      className="absolute top-0 left-0 w-full h-[200px] object-cover rounded-md opacity-0 group-hover:opacity-100 transition-all duration-300"
+    />
+  )}
+</div>
+
       </Link>
 
       <div className="py-2">

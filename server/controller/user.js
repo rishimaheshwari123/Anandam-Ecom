@@ -9,6 +9,7 @@ const sendMail = require("../utils/sendMail");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const sendToken = require("../utils/jwtToken");
 const { isAuthenticated, isAdmin } = require("../middleware/auth");
+const { uploadImageToCloudinary } = require("../utils/imageUploader");
 
 const router = express.Router();
 
@@ -232,7 +233,7 @@ router.put(
       // Find the existing user
       const existsUser = await User.findById(req.user.id);
 
-      // Check if user exists and if the avatar path is valid
+      // Check if user exists
       if (!existsUser) {
         return next(new ErrorHandler("User not found", 404));
       }
@@ -249,16 +250,20 @@ router.put(
         }
       }
 
-      // Save the new avatar
-      const fileUrl = path.join(req.file.filename);
+      // Upload new image to Cloudinary
+      const uploadResult = await uploadImageToCloudinary(req.file, "avatars", 500, "auto");
 
+      // Get the URL of the uploaded image from Cloudinary
+      const avatarUrl = uploadResult.secure_url;
+
+      // Save the new avatar URL in the user document
       const user = await User.findByIdAndUpdate(
         req.user.id,
-        { avatar: fileUrl },
+        { avatar: avatarUrl },
         { new: true } // Return updated user object
       );
 
-      // Return the updated user with the new avatar
+      // Return the updated user with the new avatar URL
       res.status(200).json({
         success: true,
         user,
@@ -269,7 +274,6 @@ router.put(
     }
   })
 );
-
 
 // update user addresses
 router.put(
