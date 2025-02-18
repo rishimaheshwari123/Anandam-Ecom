@@ -100,15 +100,14 @@ const Payment = () => {
 
   const handleRazorpayPayment = async () => {
     try {
-      console.log("Payment initiation started");
-
-      // Ensure these variables are coming from the right source
-      const { cart, shippingAddress, totalPrice } = orderData || {};
+      const { cart, shippingAddress, totalPrice, user } = orderData || {};
       const amount = totalPrice; // Assuming totalPrice is the amount to be paid
 
-      if (!cart || !shippingAddress || !amount) {
+      if (!cart || !shippingAddress || !amount || !user) {
         toast.error("Missing order details.");
-        console.log("Missing order details: cart, shippingAddress, or amount");
+        console.log(
+          "Missing order details: cart, shippingAddress, amount, or user"
+        );
         return;
       }
 
@@ -118,14 +117,9 @@ const Payment = () => {
         totalPrice,
       });
 
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
+      const config = { headers: { "Content-Type": "application/json" } };
 
-      // Step 1: Capture payment details from the backend
-      console.log("Sending request to backend for payment details...");
+      // Step 1: Create Razorpay Order
       const { data } = await axios.post(
         `${server}/razorpay/capturePayment`,
         { amount },
@@ -134,43 +128,40 @@ const Payment = () => {
 
       console.log("Backend response:", data);
 
-      if (!data || !data.order) {
+      if (!data?.order) {
         toast.error("Failed to initiate payment.");
         console.log("Failed to initiate payment: No order returned");
         return;
       }
 
-      // Step 2: Set Razorpay checkout options
+      // Step 2: Open Razorpay Checkout
       const options = {
-        key: "rzp_test_lQz64anllWjB83", // Razorpay API Key
+        key: "rzp_test_lQz64anllWjB83",
         amount: data.order.amount,
         currency: data.order.currency,
-        name: "Your Shop Name",
+        name: "Anandam Ecom",
         description: "Order Payment",
         order_id: data.order.id,
         handler: async (response) => {
-          console.log("Razorpay payment response:", response);
-
           try {
-            const paymentData = {
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_signature: response.razorpay_signature,
-              cart,
-              shippingAddress,
-              user, // Make sure `user` is available in your component scope
-              totalPrice,
-            };
-
-            // Step 3: Verify payment and place the order
             console.log("Sending payment verification to backend...");
+
+            // Corrected request body
             const verifyResponse = await axios.post(
               `${server}/razorpay/verifyPayment`,
-              paymentData,
+              {
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+                cart,
+                shippingAddress,
+                user,
+                totalPrice,
+              },
               config
             );
 
-            console.log("Payment verification response:", verifyResponse);
+            console.log("Payment verification response:", verifyResponse.data);
 
             if (verifyResponse.data.success) {
               toast.success("Payment successful! Order placed.");
@@ -191,13 +182,10 @@ const Payment = () => {
           email: user.email,
           contact: user.phone,
         },
-        theme: {
-          color: "#f63b60", // Your brand color
-        },
+        theme: { color: "#f63b60" },
       };
 
       console.log("Opening Razorpay checkout modal...");
-      // Step 4: Open Razorpay checkout modal
       const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (error) {
@@ -455,7 +443,7 @@ const PaymentInfo = ({
               className={`${styles.button} !bg-[#f63b60] text-white h-[45px] rounded-[5px] cursor-pointer text-[18px] font-[600]`}
               onClick={handleRazorpayPayment}
             >
-              pay Now
+              Pay Now
             </div>
           </div>
         ) : null}
