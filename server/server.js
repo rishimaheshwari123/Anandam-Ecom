@@ -81,6 +81,7 @@ app.use("/api/v2/event", event);
 app.use("/api/v2/coupon", coupon);
 app.use("/api/v2/payment", payment);
 app.use("/api/v2/category", require("./routes/categoryRoutes"));
+app.use("/api/v2/razorpay", require("./routes/razorpayRoute"));
 
 // it'for errhendel
 app.use(ErrorHandler);

@@ -98,6 +98,116 @@ const Payment = () => {
     amount: Math.round(orderData?.totalPrice * 100),
   };
 
+  const handleRazorpayPayment = async () => {
+    try {
+      console.log("Payment initiation started");
+
+      // Ensure these variables are coming from the right source
+      const { cart, shippingAddress, totalPrice } = orderData || {};
+      const amount = totalPrice; // Assuming totalPrice is the amount to be paid
+
+      if (!cart || !shippingAddress || !amount) {
+        toast.error("Missing order details.");
+        console.log("Missing order details: cart, shippingAddress, or amount");
+        return;
+      }
+
+      console.log("Captured order details:", {
+        cart,
+        shippingAddress,
+        totalPrice,
+      });
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      // Step 1: Capture payment details from the backend
+      console.log("Sending request to backend for payment details...");
+      const { data } = await axios.post(
+        `${server}/razorpay/capturePayment`,
+        { amount },
+        config
+      );
+
+      console.log("Backend response:", data);
+
+      if (!data || !data.order) {
+        toast.error("Failed to initiate payment.");
+        console.log("Failed to initiate payment: No order returned");
+        return;
+      }
+
+      // Step 2: Set Razorpay checkout options
+      const options = {
+        key: "rzp_test_lQz64anllWjB83", // Razorpay API Key
+        amount: data.order.amount,
+        currency: data.order.currency,
+        name: "Your Shop Name",
+        description: "Order Payment",
+        order_id: data.order.id,
+        handler: async (response) => {
+          console.log("Razorpay payment response:", response);
+
+          try {
+            const paymentData = {
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature,
+              cart,
+              shippingAddress,
+              user, // Make sure `user` is available in your component scope
+              totalPrice,
+            };
+
+            // Step 3: Verify payment and place the order
+            console.log("Sending payment verification to backend...");
+            const verifyResponse = await axios.post(
+              `${server}/razorpay/verifyPayment`,
+              paymentData,
+              config
+            );
+
+            console.log("Payment verification response:", verifyResponse);
+
+            if (verifyResponse.data.success) {
+              toast.success("Payment successful! Order placed.");
+              navigate("/order/success");
+              localStorage.setItem("cartItems", JSON.stringify([]));
+              localStorage.setItem("latestOrder", JSON.stringify([]));
+              window.location.reload();
+            } else {
+              toast.error("Payment verification failed.");
+            }
+          } catch (error) {
+            toast.error("Error verifying payment.");
+            console.log("Error during payment verification:", error);
+          }
+        },
+        prefill: {
+          name: user.name,
+          email: user.email,
+          contact: user.phone,
+        },
+        theme: {
+          color: "#f63b60", // Your brand color
+        },
+      };
+
+      console.log("Opening Razorpay checkout modal...");
+      // Step 4: Open Razorpay checkout modal
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (error) {
+      toast.error(
+        error.message || "Something went wrong during payment process."
+      );
+      console.log("Error during payment process:", error);
+    }
+  };
+
   const paymentHandler = async (e) => {
     e.preventDefault();
     try {
@@ -186,6 +296,7 @@ const Payment = () => {
             onApprove={onApprove}
             createOrder={createOrder}
             paymentHandler={paymentHandler}
+            handleRazorpayPayment={handleRazorpayPayment}
             cashOnDeliveryHandler={cashOnDeliveryHandler}
           />
         </div>
@@ -203,6 +314,7 @@ const PaymentInfo = ({
   setOpen,
   onApprove,
   createOrder,
+  handleRazorpayPayment,
   paymentHandler,
   cashOnDeliveryHandler,
 }) => {
@@ -322,7 +434,7 @@ const PaymentInfo = ({
       <br />
       {/* paypal payment */}
       <div>
-        {/* <div className="flex w-full pb-5 border-b mb-2">
+        <div className="flex w-full pb-5 border-b mb-2">
           <div
             className="w-[25px] h-[25px] rounded-full bg-transparent border-[3px] border-[#1d1a1ab4] relative flex items-center justify-center"
             onClick={() => setSelect(2)}
@@ -332,46 +444,21 @@ const PaymentInfo = ({
             ) : null}
           </div>
           <h4 className="text-[18px] pl-2 font-[600] text-[#000000b1]">
-            Pay with Paypal
+            Razorpay
           </h4>
-        </div> */}
+        </div>
 
         {/* pay with payment  */}
-        {/* {select === 2 ? (
+        {select === 2 ? (
           <div className="w-full flex border-b">
             <div
               className={`${styles.button} !bg-[#f63b60] text-white h-[45px] rounded-[5px] cursor-pointer text-[18px] font-[600]`}
-              onClick={() => setOpen(true)}
+              onClick={handleRazorpayPayment}
             >
               pay Now
             </div>
-            {open && (
-              <div className="w-full fixed top-0 left-0 bg-[#00000039] h-screen flex items-center justify-center z-[99999]">
-                <div className="w-full 800px:w-[40%] h-screen 800px:h-[80vh] bg-white rounded-[5px] shadow flex flex-col justify-center p-8 relative overflow-y-scroll">
-                  <div className="w-full flex justify-end p-3">
-                    <RxCross1
-                      size={30}
-                      className="cursor-pointer absolute top-5 right-3"
-                      onClick={() => setOpen(false)}
-                    />
-                  </div>
-                  <PayPalScriptProvider
-                    options={{
-                      "client-id":
-                        "AXRhO4eNGo3L8MUFazEFnW9hNwBP2rTwUWNqMMRcFtjpbCrDVt6vS8HoWa7hyLlfO0fxG3OU_9zit7KN",
-                    }}
-                  >
-                    <PayPalButtons
-                      style={{ layout: "vertical" }}
-                      onApprove={onApprove}
-                      createOrder={createOrder}
-                    />
-                  </PayPalScriptProvider>
-                </div>
-              </div>
-            )}
           </div>
-        ) : null} */}
+        ) : null}
       </div>
 
       <br />
