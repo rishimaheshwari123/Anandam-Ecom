@@ -175,6 +175,7 @@ router.get(
         message: "Log out successful!",
       });
     } catch (error) {
+      console.log(error)
       return next(new ErrorHandler(error.message, 500));
     }
   })
