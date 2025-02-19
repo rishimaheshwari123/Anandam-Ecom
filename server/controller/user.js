@@ -166,15 +166,13 @@ router.get(
   "/logout",
   catchAsyncErrors(async (req, res, next) => {
     try {
-      res.cookie("token", "", {
-        expires: new Date(0), // Set to a past date
+      res.cookie("token", null, {
+        expires: new Date(Date.now()),
         httpOnly: true,
-        secure: true, // Ensure it works with HTTPS
-        sameSite: "None", // Required for cross-origin cookies
-        domain: "anandam-ecom.vercel.app", // Set domain for proper cookie handling
+        sameSite: "none",
+        secure: true,
       });
-
-      res.status(200).json({
+      res.status(201).json({
         success: true,
         message: "Log out successful!",
       });
