@@ -21,16 +21,17 @@ const ProfileSidebar = ({ active, setActive }) => {
   const { user } = useSelector((state) => state.user);
 
   const logoutHandler = () => {
-    // Get all cookies and delete them
-    document.cookie.split(";").forEach((cookie) => {
-      document.cookie = cookie
-        .replace(/^ +/, "") // Remove spaces
-        .replace(/=.*/, "=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/"); // Expire the cookie
-    });
-
-    toast.success("Log out successful!");
-    window.location.reload(true);
-    navigate("/login");
+    axios
+      .get(`${server}/user/logout`, { withCredentials: true })
+      .then((res) => {
+        toast.success(res.data.message);
+        window.location.reload(true);
+        navigate("/login");
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log(error.response.data.message);
+      });
   };
 
   return (
