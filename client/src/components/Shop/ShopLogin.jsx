@@ -40,6 +40,7 @@ const ShopLogin = () => {
           isLoading: false,
           autoClose: 3000,
         });
+        console.log(err);
       });
   };
 
