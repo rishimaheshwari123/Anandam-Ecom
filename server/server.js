@@ -31,7 +31,6 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: "https://anandam-ecom.vercel.app",
-    credentials: true,
   })
 );
 
