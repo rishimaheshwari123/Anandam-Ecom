@@ -31,10 +31,15 @@ const ShopInfo = ({ isOwner }) => {
   }, []);
 
   const logoutHandler = async () => {
-    axios.get(`${server}/shop/logout`, {
-      withCredentials: true,
-    });
-    window.location.reload();
+    try {
+      await axios.get(`${server}/shop/logout`, {
+        withCredentials: true,
+      });
+      console.log("Logout successful");
+      window.location.reload();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   const totalReviewsLength =

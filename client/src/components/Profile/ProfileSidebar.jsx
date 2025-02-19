@@ -20,18 +20,23 @@ const ProfileSidebar = ({ active, setActive }) => {
 
   const { user } = useSelector((state) => state.user);
 
-  const logoutHandler = () => {
-    axios
-      .get(`${server}/user/logout`, { withCredentials: true })
-      .then((res) => {
-        toast.success(res.data.message);
-        window.location.reload(true);
-        navigate("/login");
-      })
-      .catch((error) => {
-        console.log(error);
-        console.log(error.response.data.message);
+  const logoutHandler = async () => {
+    try {
+      const res = await axios.get(`${server}/user/logout`, {
+        withCredentials: true, // Ensure cookies are included
       });
+
+      toast.success(res.data.message);
+
+      // Ensure proper redirection
+      navigate("/login");
+      window.location.reload(true);
+    } catch (error) {
+      console.error("Logout failed:", error);
+      if (error.response) {
+        console.error(error.response.data.message);
+      }
+    }
   };
 
   return (
