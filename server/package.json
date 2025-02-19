@@ -1,5 +1,5 @@
 {
-  "name": "e-shop-multi-vendor",
+  "name": "Anandam-ecom",
   "version": "1.0.0",
   "main": "server.js",
   "engines": {
@@ -7,10 +7,9 @@
   },
   "scripts": {
     "dev": "nodemon server.js",
-    "start": "node server.js",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false"
+    "start": "node server.js"
   },
-  "author": "Om Prakash Pattjoshi",
+  "author": "I Next Ets",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
