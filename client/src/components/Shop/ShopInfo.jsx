@@ -30,11 +30,17 @@ const ShopInfo = ({ isOwner }) => {
       });
   }, []);
 
-  const logoutHandler = async () => {
-    axios.get(`${server}/shop/logout`, {
-      withCredentials: true,
+  const logoutHandler = () => {
+    // Get all cookies and delete them
+    document.cookie.split(";").forEach((cookie) => {
+      document.cookie = cookie
+        .replace(/^ +/, "") // Remove spaces
+        .replace(/=.*/, "=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/"); // Expire the cookie
     });
-    window.location.reload();
+
+    toast.success("Log out successful!");
+    window.location.reload(true);
+    navigate("/login");
   };
 
   const totalReviewsLength =

@@ -26,7 +26,6 @@ const server = app.listen(process.env.PORT, () => {
 // middlewares
 app.use(express.json());
 app.use(cookieParser());
-// Enable CORS for all routes
 
 app.use(
   cors({
