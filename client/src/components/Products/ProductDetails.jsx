@@ -125,10 +125,17 @@ const ProductDetails = ({ data }) => {
             <div className="block w-full 800px:flex">
               <div className="w-full 800px:w-[50%]">
                 <img
-                  src={`${backend_url}${data && data.images[select]}`}
-                  alt=""
                   className="w-[80%]"
+                  src={
+                    data?.images[select]?.startsWith(
+                      "https://res.cloudinary.com"
+                    )
+                      ? data.images[select]
+                      : `${backend_url}${data?.images[select]}`
+                  }
+                  alt="Image"
                 />
+
                 <div className="w-full flex">
                   {data &&
                     data.images.map((i, index) => (
@@ -138,9 +145,13 @@ const ProductDetails = ({ data }) => {
                         } cursor-pointer`}
                       >
                         <img
-                          src={`${backend_url}${i}`}
-                          alt=""
                           className="h-[200px] overflow-hidden mr-3 mt-3"
+                          src={
+                            i?.startsWith("https://res.cloudinary.com")
+                              ? i
+                              : `${backend_url}${i}`
+                          }
+                          alt="Image"
                           onClick={() => setSelect(index)}
                         />
                       </div>
@@ -283,111 +294,127 @@ const ProductDetailsInfo = ({
 
   return (
     <div className="bg-[#f5f6fb] px-5 py-4 rounded-lg shadow-lg">
-    <div className="flex justify-between border-b border-gray-300 pb-4">
-      <div className="relative cursor-pointer" onClick={() => setActive(1)}>
-        <h5
-          className={`text-[#000] text-lg font-semibold ${
-            active === 1 ? "text-blue-600" : "text-gray-700"
-          } hover:text-blue-600 transition`}
-        >
-          Product Details
-        </h5>
-        {active === 1 && <div className="absolute bottom-0 left-0 w-1/2 h-[2px] bg-blue-600" />}
+      <div className="flex justify-between border-b border-gray-300 pb-4">
+        <div className="relative cursor-pointer" onClick={() => setActive(1)}>
+          <h5
+            className={`text-[#000] text-lg font-semibold ${
+              active === 1 ? "text-blue-600" : "text-gray-700"
+            } hover:text-blue-600 transition`}
+          >
+            Product Details
+          </h5>
+          {active === 1 && (
+            <div className="absolute bottom-0 left-0 w-1/2 h-[2px] bg-blue-600" />
+          )}
+        </div>
+
+        <div className="relative cursor-pointer" onClick={() => setActive(2)}>
+          <h5
+            className={`text-[#000] text-lg font-semibold ${
+              active === 2 ? "text-blue-600" : "text-gray-700"
+            } hover:text-blue-600 transition`}
+          >
+            Product Reviews
+          </h5>
+          {active === 2 && (
+            <div className="absolute bottom-0 left-0 w-1/2 h-[2px] bg-blue-600" />
+          )}
+        </div>
+
+        <div className="relative cursor-pointer" onClick={() => setActive(3)}>
+          <h5
+            className={`text-[#000] text-lg font-semibold ${
+              active === 3 ? "text-blue-600" : "text-gray-700"
+            } hover:text-blue-600 transition`}
+          >
+            Seller Information
+          </h5>
+          {active === 3 && (
+            <div className="absolute bottom-0 left-0 w-1/2 h-[2px] bg-blue-600" />
+          )}
+        </div>
       </div>
-      
-      <div className="relative cursor-pointer" onClick={() => setActive(2)}>
-        <h5
-          className={`text-[#000] text-lg font-semibold ${
-            active === 2 ? "text-blue-600" : "text-gray-700"
-          } hover:text-blue-600 transition`}
-        >
-          Product Reviews
-        </h5>
-        {active === 2 && <div className="absolute bottom-0 left-0 w-1/2 h-[2px] bg-blue-600" />}
-      </div>
-  
-      <div className="relative cursor-pointer" onClick={() => setActive(3)}>
-        <h5
-          className={`text-[#000] text-lg font-semibold ${
-            active === 3 ? "text-blue-600" : "text-gray-700"
-          } hover:text-blue-600 transition`}
-        >
-          Seller Information
-        </h5>
-        {active === 3 && <div className="absolute bottom-0 left-0 w-1/2 h-[2px] bg-blue-600" />}
-      </div>
-    </div>
-  
-    {active === 1 && (
-      <p className="py-4 text-lg leading-8 whitespace-pre-line">{data.description}</p>
-    )}
-  
-    {/* Product Reviews */}
-    {active === 2 && (
-      <div className="w-full min-h-[40vh] py-4 overflow-y-auto">
-        {data && data.reviews.length === 0 ? (
-          <h5 className="text-center text-xl text-gray-500">No Reviews for this product!</h5>
-        ) : (
-          data.reviews.map((item, index) => (
-            <div key={index} className="flex my-4 border-b pb-4">
+
+      {active === 1 && (
+        <p className="py-4 text-lg leading-8 whitespace-pre-line">
+          {data.description}
+        </p>
+      )}
+
+      {/* Product Reviews */}
+      {active === 2 && (
+        <div className="w-full min-h-[40vh] py-4 overflow-y-auto">
+          {data && data.reviews.length === 0 ? (
+            <h5 className="text-center text-xl text-gray-500">
+              No Reviews for this product!
+            </h5>
+          ) : (
+            data.reviews.map((item, index) => (
+              <div key={index} className="flex my-4 border-b pb-4">
+                <img
+                  src={`${backend_url}/${item.user.avatar}`}
+                  alt="user-avatar"
+                  className="w-[50px] h-[50px] rounded-full"
+                />
+                <div className="pl-3 flex-1">
+                  <div className="flex items-center">
+                    <h1 className="font-semibold mr-3">{item.user.name}</h1>
+                    <Ratings rating={data?.ratings} />
+                  </div>
+                  <p className="text-sm text-gray-600">{item.comment}</p>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+      {/* Seller Information */}
+      {active === 3 && (
+        <div className="w-full flex flex-col md:flex-row gap-6 p-5">
+          <div className="w-full md:w-[50%]">
+            <Link
+              to={`/shop/preview/${data.shop._id}`}
+              className="flex items-center"
+            >
               <img
-                src={`${backend_url}/${item.user.avatar}`}
-                alt="user-avatar"
+                src={`${backend_url}${data?.shop?.avatar}`}
+                alt="shop-avatar"
                 className="w-[50px] h-[50px] rounded-full"
               />
-              <div className="pl-3 flex-1">
-                <div className="flex items-center">
-                  <h1 className="font-semibold mr-3">{item.user.name}</h1>
-                  <Ratings rating={data?.ratings} />
-                </div>
-                <p className="text-sm text-gray-600">{item.comment}</p>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
-    )}
-  
-    {/* Seller Information */}
-    {active === 3 && (
-      <div className="w-full flex flex-col md:flex-row gap-6 p-5">
-        <div className="w-full md:w-[50%]">
-          <Link to={`/shop/preview/${data.shop._id}`} className="flex items-center">
-            <img
-              src={`${backend_url}${data?.shop?.avatar}`}
-              alt="shop-avatar"
-              className="w-[50px] h-[50px] rounded-full"
-            />
-            <div className="pl-3">
-              <h3 className="text-lg font-semibold">{data.shop.name}</h3>
-              <h5 className="text-sm text-gray-500">({averageRating}/5) Ratings</h5>
-            </div>
-          </Link>
-          <p className="pt-4 text-gray-600">{data.shop.description}</p>
-        </div>
-  
-        <div className="w-full md:w-[50%] flex flex-col items-start md:items-end">
-          <div className="text-left">
-            <h5 className="font-semibold">Joined on:</h5>
-            <p className="font-medium">{data.shop?.createdAt?.slice(0, 10)}</p>
-            
-            <h5 className="font-semibold pt-4">Total Products:</h5>
-            <p className="font-medium">{products && products.length}</p>
-  
-            <h5 className="font-semibold pt-4">Total Reviews:</h5>
-            <p className="font-medium">{totalReviewsLength}</p>
-  
-            <Link to="/" className="mt-4 w-full md:w-auto">
-              <div className="bg-blue-600 text-white py-2 px-6 rounded-md text-center hover:bg-blue-700 transition">
-                Visit Shop
+              <div className="pl-3">
+                <h3 className="text-lg font-semibold">{data.shop.name}</h3>
+                <h5 className="text-sm text-gray-500">
+                  ({averageRating}/5) Ratings
+                </h5>
               </div>
             </Link>
+            <p className="pt-4 text-gray-600">{data.shop.description}</p>
+          </div>
+
+          <div className="w-full md:w-[50%] flex flex-col items-start md:items-end">
+            <div className="text-left">
+              <h5 className="font-semibold">Joined on:</h5>
+              <p className="font-medium">
+                {data.shop?.createdAt?.slice(0, 10)}
+              </p>
+
+              <h5 className="font-semibold pt-4">Total Products:</h5>
+              <p className="font-medium">{products && products.length}</p>
+
+              <h5 className="font-semibold pt-4">Total Reviews:</h5>
+              <p className="font-medium">{totalReviewsLength}</p>
+
+              <Link to="/" className="mt-4 w-full md:w-auto">
+                <div className="bg-blue-600 text-white py-2 px-6 rounded-md text-center hover:bg-blue-700 transition">
+                  Visit Shop
+                </div>
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
-    )}
-  </div>
-  
+      )}
+    </div>
   );
 };
 

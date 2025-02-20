@@ -141,11 +141,14 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
             </div>
           </div>
           <img
-            src={`${backend_url}${data?.images[0]}`}
             className="w-[130px] h-min ml-2 mr-2 rounded-[5px]"
-            alt="side card"
+            src={
+              data?.images[0]?.startsWith("https://res.cloudinary.com")
+                ? data.images[0]
+                : `${backend_url}${data?.images[0]}`
+            }
+            alt="Image"
           />
-
           <div className="pl-[15px]">
             <h1>{data.name}</h1>
             <h4 className="font-[400] text-[15px] text-[#00000082]">
