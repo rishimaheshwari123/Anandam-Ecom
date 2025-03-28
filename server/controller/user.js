@@ -15,6 +15,7 @@ const router = express.Router();
 
 router.post("/create-user", upload.single("file"), async (req, res, next) => {
   try {
+    console.log("test")
     const { name, email, password } = req.body;
     const userEmail = await User.findOne({ email });
 
@@ -41,6 +42,14 @@ router.post("/create-user", upload.single("file"), async (req, res, next) => {
       password: password,
       avatar: fileUrl,
     };
+
+
+    const userSave = await User.create({
+      name,
+      email,
+      avatar: fileUrl,
+      password,
+    });
 
     const activationToken = createActivationToken(user);
 
