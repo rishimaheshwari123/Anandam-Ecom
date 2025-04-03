@@ -9,16 +9,13 @@ const cors = require("cors");
 const path = require("path");
 const { cloudinaryConnect } = require("./config/cloudinary");
 
-// config
 if (process.env.NODE_ENV !== "PRODUCTION") {
   require("dotenv").config({
     path: "config/.env",
   });
 }
-// connect db
 connectDatabase();
 cloudinaryConnect();
-// create server
 const server = app.listen(process.env.PORT, () => {
   console.log(`Server is running on http://localhost:${process.env.PORT}`);
 });
@@ -29,7 +26,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: ["http://localhost:8001", "https://anandamecommerce.com"],
+    origin: "*",
     credentials: true,
   })
 );
