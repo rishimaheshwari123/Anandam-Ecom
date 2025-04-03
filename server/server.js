@@ -29,7 +29,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: ["http://localhost:8001", "http://anandamecommerce.com"],
+    origin: ["http://localhost:8001", "https://anandamecommerce.com"],
     credentials: true,
   })
 );
