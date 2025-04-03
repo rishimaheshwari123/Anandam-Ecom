@@ -24,14 +24,21 @@ const server = app.listen(process.env.PORT, () => {
 app.use(express.json());
 app.use(cookieParser());
 
+
 app.use(
   cors({
-    origin: "*",
-    credentials: true,
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:8001",
+      "https://www.anandamecommerce.com",
+      "https://anandamecommerce.com",
+    ],
+    credentials: true, // Cookies aur authentication allow karega
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"], 
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
 
 app.use("/", express.static("uploads"));
 
