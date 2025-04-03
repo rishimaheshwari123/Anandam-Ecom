@@ -60,11 +60,11 @@ router.post("/create-user", upload.single("file"), async (req, res, next) => {
       await sendMail({
         email: user.email,
         subject: "Activate your account",
-        message: `Hello  ${user.name}, please click on the link to activate your account ${activationUrl} `,
+        message: `User register successfully! `,
       });
       res.status(201).json({
         success: true,
-        message: `please check your email:- ${user.email} to activate your account!`,
+        message: `User register successfully!`,
       });
     } catch (err) {
       return next(new ErrorHandler(err.message, 500));

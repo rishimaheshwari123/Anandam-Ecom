@@ -70,9 +70,13 @@ const ShopInfo = ({ isOwner }) => {
           <div className="w-full py-5">
             <div className="w-full flex item-center justify-center">
               <img
-                src={`${data?.avatar || ""}`}
-                alt="Shop Avatar"
+                src={
+                  data?.avatar?.startsWith("https://res.cloudinary.com")
+                    ? data.avatar
+                    : `${backend_url}${data?.avatar || "/default-avatar.png"}`
+                }
                 className="w-[150px] h-[150px] object-cover rounded-full"
+                alt="profile img"
               />
             </div>
             <h3 className="text-center py-2 text-[20px]">{data?.name}</h3>

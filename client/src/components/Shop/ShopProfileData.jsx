@@ -103,6 +103,15 @@ const ShopProfileData = ({ isOwner }) => {
                 className="w-[50px] h-[50px] rounded-full"
                 alt=""
               />
+              <img
+                src={
+                  seller?.avatar?.startsWith("https://res.cloudinary.com")
+                    ? seller.avatar
+                    : `${backend_url}${seller?.avatar || "/default-avatar.png"}`
+                }
+                className="w-[50px] h-[50px] rounded-full object-cover shadow-lg cursor-pointer transition-transform duration-300 hover:scale-105"
+                alt="profile img"
+              />
               <div className="pl-2">
                 <div className="flex w-full items-center">
                   <h1 className="font-[600] pr-2">{item.user?.name}</h1>

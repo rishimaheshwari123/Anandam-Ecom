@@ -278,6 +278,7 @@ const MessageList = ({
         console.log(error);
       }
     };
+    console.log(userData);
     getUser();
   }, [me, data]);
 

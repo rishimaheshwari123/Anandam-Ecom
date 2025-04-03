@@ -29,36 +29,34 @@ router.post("/create-shop", upload.single("file"), async (req, res, next) => {
           res.status(500).json({ message: "Error deleting file" });
         }
       });
-      return next(new ErrorHandler("User already exists", 400));
     }
 
     const filename = req.file.filename;
     const fileUrl = path.join(filename);
 
-    const seller = {
+    const seller = await Shop.create({
       name: req.body.name,
-      email: email,
-      password: req.body.password,
+      email,
       avatar: fileUrl,
+      password: req.body.password,
+      zipCode: req.body.zipCode,
       address: req.body.address,
       phoneNumber: req.body.phoneNumber,
-      zipCode: req.body.zipCode,
-    };
+    });
+    res.status(201).json({
+      success: true,
+      message: `Shop Created Successfully!`,
+      seller
+    });
 
-    const activationToken = createActivationToken(seller);
-
-    const activationUrl = `https://anandam-ecom.vercel.app/seller/activation/${activationToken}`;
 
     try {
-      await sendMail({
-        email: seller.email,
-        subject: "Activate your Shop",
-        message: `Hello ${seller.name}, please click on the link to activate your shop: ${activationUrl}`,
-      });
       res.status(201).json({
         success: true,
-        message: `please check your email:- ${seller.email} to activate your shop!`,
+        message: `Shop Created Successfully!`,
+        seller
       });
+
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }

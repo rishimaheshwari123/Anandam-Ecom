@@ -194,9 +194,15 @@ const Header = ({ activeHeading }) => {
                 {isAuthenticated ? (
                   <Link to="/profile">
                     <img
-                      src={`${user.avatar}`}
+                      src={
+                        user?.avatar?.startsWith("https://res.cloudinary.com")
+                          ? user.avatar
+                          : `${backend_url}${
+                              user?.avatar || "/default-avatar.png"
+                            }`
+                      }
                       className="w-[35px] h-[35px] rounded-full"
-                      alt=""
+                      alt="profile img"
                     />
                   </Link>
                 ) : (

@@ -61,11 +61,16 @@ const DashboardHeader = () => {
           {/* Profile Avatar */}
           <Link to={`/shop/${seller._id}`} className="relative">
             <img
-              src={`${seller.avatar}`}
-              alt="Seller Avatar"
+              src={
+                seller?.avatar?.startsWith("https://res.cloudinary.com")
+                  ? seller.avatar
+                  : `${backend_url}${seller?.avatar || "/default-avatar.png"}`
+              }
               className="w-[50px] h-[50px] rounded-full object-cover shadow-lg cursor-pointer transition-transform duration-300 hover:scale-105"
+              alt="profile img"
             />
-            <span className="absolute bottom-0 right-0 w-[12px] h-[12px] bg-crimson rounded-full border-2 border-white"></span> {/* Online status */}
+            <span className="absolute bottom-0 right-0 w-[12px] h-[12px] bg-crimson rounded-full border-2 border-white"></span>{" "}
+            {/* Online status */}
           </Link>
         </div>
       </div>
