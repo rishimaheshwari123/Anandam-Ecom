@@ -46,8 +46,9 @@ app.get("/test", (req, res) => {
   res.send("Hello World!");
 });
 
-app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
-
+// app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
+app.use(bodyParser.json({ limit: "100mb" }));
+app.use(bodyParser.urlencoded({ extended: true, limit: "100mb" }));
 // why bodyparser?
 // bodyparser is used to parse the data from the body of the request to the server (POST, PUT, DELETE, etc.)
 
