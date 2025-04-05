@@ -221,20 +221,20 @@ export const categoriesData = [
     title: "Shoes",
     subTitle: "",
     image_Url:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQvBQPQMVNRd6TtDkGs2dCri0Y-rxKkFOiEWw&usqp=CAU",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROGB80eBB9xFOzwnEE5k6H4mFUSo3B-w1kOQ&s",
   },
   {
     id: 6,
     title: "Gifts",
     subTitle: "",
     image_Url:
-      "https://securecdn.pymnts.com/wp-content/uploads/2014/11/Gifts-Photo-700x489.jpg",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2MYFAHJjIoOTH1gNT_iIJ2UxWFFv67BIjJQ&s",
   },
   {
     id: 7,
     title: "Pet Care",
     subTitle: "",
-    image_Url: "https://cdn.openpr.com/T/c/Tc15444071_g.jpg",
+    image_Url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPsJ2UtsfXez4gGv9gvuOVyZhEiXJIFf9E6A&s",
   },
   {
     id: 8,
