@@ -159,10 +159,11 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
               INR₹{totalPrice}
             </h4>
           </div>
+
           <RxCross1
-            size={99}
+            size={30}
             color="#7d879c"
-            className="cursor-pointer"
+            className="cursor-pointer ml-10"
             onClick={() => removeFromCartHandler(data)}
           />
         </div>
